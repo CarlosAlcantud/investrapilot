@@ -1,6 +1,7 @@
 package org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.services;
 
-import org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.entity.Budget;
+import org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.clients.UserClientRest;
+import org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.models.entity.Budget;
 import org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.repositories.BudgetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Autowired
     private BudgetRepository repository;
+
+    @Autowired
+    private UserClientRest userClientRest;
 
     @Override
     @Transactional(readOnly = true)
