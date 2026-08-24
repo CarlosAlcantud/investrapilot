@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface BudgetService {
 
-    List<Budget> listar();
+    List<Budget> listar(Long id);
     Optional<Budget> porId(Long id);
     Budget guardar(Budget budget);
     void eliminar(Long id);
