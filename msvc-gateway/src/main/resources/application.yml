@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: msvc-gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: msvc-usuarios
+            uri: http://localhost:8001
+            predicates:
+              - Path=/api/users/**
+
+          - id: msvc-budgetservice
+            uri: http://localhost:8002
+            predicates:
+              - Path=/api/budgets/**
+server:
+  port: 8091
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway, health
