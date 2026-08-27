@@ -1,10 +1,11 @@
-package org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.entity;
+package org.alcantud.springcloud.msvc.budgetservice.msvc_budgetservice.models.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 
 @Entity
@@ -13,14 +14,15 @@ public class Budget {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
 
-    private UUID userId;
+    @NotNull(message = "The budget must be assigned to a user")
+    private Long userId;
 
-
+    @NotEmpty(message = "The name can not be empty")
     private String name;
 
-    private UUID categoryId;
+    private Long categoryId;
 
     private BigDecimal amountLimit;
 
@@ -31,19 +33,19 @@ public class Budget {
 
     LocalDate endDate;
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public UUID getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -55,11 +57,11 @@ public class Budget {
         this.name = name;
     }
 
-    public UUID getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(UUID categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 

@@ -1,6 +1,9 @@
 package org.alcantud.springcloud.msvc.usuarios.models.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="usuarios")
@@ -10,12 +13,16 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "the name must not be empty")
     @Column
     private String nombre;
 
+    @NotEmpty(message = "the email must not be empty")
+    @Email(message="The email must be correct")
     @Column(unique = true)
     private String email;
 
+    @NotBlank(message = "The password must not be blank or empty")
     private String password;
 
     public Long getId() {
