@@ -1,13 +1,18 @@
 package org.alcantud.springcloud.msvc.usuarios.controllers;
 
+import jakarta.validation.Valid;
 import org.alcantud.springcloud.msvc.usuarios.models.entity.Usuario;
 import org.alcantud.springcloud.msvc.usuarios.services.UsuarioService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //RestController sirve para convertir las respuestas en formato JSON.
@@ -29,7 +34,7 @@ public class UsuarioController {
 
         Optional<Usuario> usuarioOptional = service.porId(id);
         if (usuarioOptional.isPresent()) {
-            return ResponseEntity.ok().body( usuarioOptional.get());
+            return ResponseEntity.ok().body(usuarioOptional.get());
 
         }
         //El .build() sirve para generar la respuesta en http, que no lo ha encontrado.
@@ -41,13 +46,19 @@ public class UsuarioController {
     //No el ok.
     @ResponseStatus(HttpStatus.CREATED) //Tambien se puede hacer como en el metodo anterior ResponseEntity
     //El RequestBody lo que hace es coger el body y automaticamente hacerlo del tipo Usuario inyectandolo.
-    public Usuario crear(@RequestBody Usuario usuario){
-        return service.guardar(usuario);
+    public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario, BindingResult result){
+        if (result.hasErrors()){
+            return validate(result);
+        }
+        //return service.guardar(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(usuario));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editar(@RequestBody Usuario usuario, @PathVariable Long id){
-
+    public ResponseEntity<?> editar(@Valid @RequestBody Usuario usuario, BindingResult result, @PathVariable Long id){
+        if (result.hasErrors()){
+            return validate(result);
+        }
         Optional<Usuario> o = service.porId(id);
         if(o.isPresent()){
             Usuario usuarioDb = o.get();
@@ -75,6 +86,16 @@ public class UsuarioController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    private static @NonNull ResponseEntity<Map<String, String>> validate(BindingResult result) {
+        Map<String, String> errores = new HashMap<>();
+        //This is a lambda expresion
+        result.getFieldErrors().forEach(error -> {
+            errores.put(error.getField(), "The field " + error.getField() + " " + error.getDefaultMessage() );
+        });
+
+        return ResponseEntity.badRequest().body(errores);
     }
 
 }
