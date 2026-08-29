@@ -1,27 +1,44 @@
-name: CI - msvc-usuarios
+name: CI - Usuarios Service
 
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'msvc-usuarios/**'
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'msvc-usuarios/**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: msvc_usuarios
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     defaults:
       run:
         working-directory: ./msvc-usuarios
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
-
-      - name: Configurar Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-
       - name: Ejecutar tests
         run: mvn -B test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/msvc_usuarios
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root
